@@ -1,6 +1,7 @@
 var http = require('http'),
 	createHandler = require('./webhook-handler'),
-	handler = createHandler({ path: '/webhook', secret: 'myhashsecret' });
+	handler = createHandler({ path: '/webhook', secret: 'myhashsecret' }),
+	port = process.env.PORT || 8080;
 
 /**
 * possible events to listen for:
@@ -35,7 +36,7 @@ http.createServer(function (req, res) {
 		res.statusCode = 404;
 		res.end('no such location');
 	})
-}).listen(80);
+}).listen(port);
 
 handler.on('error', function (err) {
 	console.error('Error:', err.message);
