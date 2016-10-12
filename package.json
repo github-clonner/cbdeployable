@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "description": "middleware for processing GitHub Webhooks",
   "main": "server.js",
-  "scripts": {},
+  "scripts": {
+    "test": "node test.js"
+  },
   "keywords": [
     "github",
     "webhooks"
@@ -12,7 +14,8 @@
   "license": "MIT",
   "dependencies": {
     "bl": "~1.1.2",
-    "buffer-equal-constant-time": "~1.0.1"
+    "buffer-equal-constant-time": "~1.0.1",
+    "node-ansible": "^0.5.5"
   },
   "devDependencies": {
     "run-series": "~1.1.4",
