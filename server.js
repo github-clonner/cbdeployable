@@ -6,7 +6,7 @@ var http = require('http'),
 	emitter = new Emitter(),
 	port = process.env.PORT || 8080;
 
-deployHandler.initialize(this);
+deployHandler.initialize(emitter);
 
 http.createServer(function (req, res) {
 	handler(req, res, function (err) {
