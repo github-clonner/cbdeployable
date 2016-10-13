@@ -2,8 +2,7 @@ var http = require('http'),
 	createHandler = require('./lib/webhook-handler'),
 	handler = createHandler({ path: '/webhook', secret: 'myhashsecret' }),
 	ansible = require('./lib/ansible-handler'),
-	port = process.env.PORT || 8080,
-	deploy;
+	port = process.env.PORT || 8080;
 
 http.createServer(function (req, res) {
 	handler(req, res, function (err) {
@@ -16,10 +15,6 @@ handler.on('error', function (err) {
 	console.error('Error:', err.message);
 });
 
-deploy.on('success', function (options) {
-	console.log('success', options.playbook, options.vars);
-});
-
 handler.on('push', function (event) {
 	console.log('Received a push event for %s to %s',
 		event.payload.repository.name,
@@ -30,6 +25,10 @@ handler.on('push', function (event) {
 		vars: {
 			env: 'dev'
 		}
+	});
+
+	deploy.on('success', function (options) {
+		console.log('success', options.playbook, options.vars);
 	});
 
 });
