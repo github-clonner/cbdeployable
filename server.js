@@ -3,10 +3,12 @@ var http = require('http'),
 	handler = createHandler({ path: '/webhook', secret: 'myhashsecret' }),
 	deployHandler = require('./lib/ansible-handler'),
 	Emitter = require('tiny-emitter'),
-	emitter = new Emitter(),
+	//emitter = new Emitter(),
 	port = process.env.PORT || 8080;
 
-deployHandler.initialize(emitter);
+const emitter = new Emitter();
+
+//deployHandler.initialize(emitter);
 
 http.createServer(function (req, res) {
 	handler(req, res, function (err) {
