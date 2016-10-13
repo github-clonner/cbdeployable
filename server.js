@@ -2,7 +2,6 @@ var http = require('http'),
 	createHandler = require('./lib/webhook-handler'),
 	handler = createHandler({ path: '/webhook', secret: 'myhashsecret' }),
 	ansible = require('./lib/ansible-handler'),
-	deploy,
 	port = process.env.PORT || 8080;
 
 http.createServer(function (req, res) {
@@ -21,7 +20,7 @@ handler.on('push', function (event) {
 		event.payload.repository.name,
 		event.payload.ref);
 
-	var deploy = deployer({
+	var deploy = ansible.deploy({
 		playbook: 'temp',
 		vars: {
 			env: 'dev'
