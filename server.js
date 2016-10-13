@@ -3,12 +3,8 @@ var http = require('http'),
 	handler = createHandler({ path: '/webhook', secret: 'myhashsecret' }),
 	deployHandler = require('./lib/ansible-handler'),
 	Emitter = require('tiny-emitter'),
-	//emitter = new Emitter(),
+	emitter = new Emitter(),
 	port = process.env.PORT || 8080;
-
-const emitter = new Emitter();
-
-//deployHandler.initialize(emitter);
 
 http.createServer(function (req, res) {
 	handler(req, res, function (err) {
@@ -33,6 +29,8 @@ handler.on('push', function (event) {
 	console.log('Received a push event for %s to %s',
 		event.payload.repository.name,
 		event.payload.ref);
+
+	deployHandler.initialize(emitter);
 
 	var deploy = deployHandler.deploy({
 		playbook: 'temp',
