@@ -15,7 +15,8 @@
   "dependencies": {
     "bl": "~1.1.2",
     "buffer-equal-constant-time": "~1.0.1",
-    "node-ansible": "^0.5.5"
+    "node-ansible": "^0.5.5",
+    "tiny-emitter": "^1.1.0"
   },
   "devDependencies": {
     "run-series": "~1.1.4",
