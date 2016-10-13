@@ -27,8 +27,6 @@ handler.on('push', function (event) {
 		}
 	});
 
-	deploy.on('success', function (options) {
-		console.log('success', options.playbook, options.vars);
-	});
+	console.log('deploy', deploy);
 
 });
