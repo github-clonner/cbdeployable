@@ -15,11 +15,11 @@ handler.on('error', function (err) {
 	console.error('Error:', err.message);
 });
 
-deployHandler.on('error', function (err) {
+deployHandler.emitter.on('error', function (err) {
 	console.error('Error:', err);
 });
 
-deployHandler.on('success', function (msg) {
+deployHandler.emitter.on('success', function (msg) {
 	console.error('Success:', msg);
 });
 
