@@ -2,7 +2,12 @@ var http = require('http'),
 	createHandler = require('./lib/webhook-handler'),
 	handler = createHandler({ path: '/webhook', secret: 'myhashsecret' }),
 	ansible = require('./lib/ansible-handler'),
-	deployer = ansible({}),
+	deployer = ansible({
+		playbook: 'temp',
+		vars: {
+			env: 'dev'
+		}
+	}),
 	port = process.env.PORT || 8080;
 
 http.createServer(function (req, res) {
