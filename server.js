@@ -31,7 +31,7 @@ emitter.on('deploy-success', function (msg) {
 	console.error('Success:', msg);
 });
 
-handler.on('push', function (event) {
+emitter.on('push', function (event) {
 	console.log('Received a push event for %s to %s',
 		event.payload.repository.name,
 		event.payload.ref);
