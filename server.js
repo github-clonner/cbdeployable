@@ -1,27 +1,33 @@
 var http = require('http'),
-	createHandler = require('./lib/webhook-handler'),
-	handler = createHandler({ path: '/webhook', secret: 'myhashsecret' }),
-	deployHandler = require('./lib/ansible-handler'),
+	webhookHandler = require('./lib/webhook-handler'),
+	ansibleHandler = require('./lib/ansible-handler'),
 	Emitter = require('tiny-emitter'),
 	emitter = new Emitter(),
 	port = process.env.PORT || 8080;
 
 http.createServer(function (req, res) {
-	handler(req, res, function (err) {
+
+	webhookHandler.initialize(emitter, {
+		path: '/webhook',
+		secret: 'myhashsecret'
+	});
+
+	webhookHandler.handler(req, res, function (err) {
 		res.statusCode = 404;
 		res.end('no such location');
 	})
+
 }).listen(port);
 
-handler.on('error', function (err) {
-	console.error('Error:', err.message);
-});
-
 emitter.on('error', function (err) {
-	console.error('Error:', err);
+	if(typeof err === 'object') {
+		console.error('Error:', err.message);
+	} else {
+		console.error('Error:', err);
+	}
 });
 
-emitter.on('success', function (msg) {
+emitter.on('deploy-success', function (msg) {
 	console.error('Success:', msg);
 });
 
@@ -30,9 +36,9 @@ handler.on('push', function (event) {
 		event.payload.repository.name,
 		event.payload.ref);
 
-	deployHandler.initialize(emitter);
+	ansibleHandler.initialize(emitter);
 
-	var deploy = deployHandler.deploy({
+	var deploy = ansibleHandler.deploy({
 		playbook: 'temp',
 		vars: {
 			env: 'dev'
