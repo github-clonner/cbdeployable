@@ -4,13 +4,13 @@ var http = require('http'),
 	Emitter = require('tiny-emitter'),
 	emitter = new Emitter(),
 	port = process.env.PORT || 8080,
-	hookRouter = {
+	hookOpts = {
 		path: '/webhook',
 		secret: 'myhashsecret'
 	};
 
 http.createServer(function (req, res) {
-	webhookHandler.initialize(emitter, hookRouter, function(o) {
+	webhookHandler.initialize(emitter, hookOpts, function(o) {
 		o.handler(req, res, function (err) {
 			res.statusCode = 404;
 			res.end('no such location');
