@@ -6,12 +6,13 @@ var http = require('http'),
 	port = process.env.PORT || 8080;
 
 http.createServer(function (req, res) {
-
-	webhookHandler.initialize(emitter, {
+	var hookRouter = {
 		path: '/webhook',
 		secret: 'myhashsecret'
-	}, function() {
-		webhookHandler.handler(req, res, function (err) {
+	}
+
+	webhookHandler.initialize(emitter, hookRouter, function() {
+		this.handler(req, res, function (err) {
 			res.statusCode = 404;
 			res.end('no such location');
 		});
@@ -31,7 +32,7 @@ emitter.on('push', function (event) {
 	console.log('Received a push event for %s to %s', event.payload.repository.name, event.payload.ref);
 
 	ansibleHandler.initialize(emitter, function() {
-		ansibleHandler.deploy({
+		this.deploy({
 			playbook: 'temp',
 			vars: {
 				env: 'dev'
