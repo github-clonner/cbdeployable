@@ -10,38 +10,32 @@ http.createServer(function (req, res) {
 	webhookHandler.initialize(emitter, {
 		path: '/webhook',
 		secret: 'myhashsecret'
+	}, function() {
+		webhookHandler.handler(req, res, function (err) {
+			res.statusCode = 404;
+			res.end('no such location');
+		});
 	});
-
-	webhookHandler.handler(req, res, function (err) {
-		res.statusCode = 404;
-		res.end('no such location');
-	})
 
 }).listen(port);
 
 emitter.on('error', function (err) {
-	if(typeof err === 'object') {
-		console.error('Error:', err.message);
-	} else {
-		console.error('Error:', err);
-	}
+	console.error('Error: %s', err);
 });
 
 emitter.on('deploy-success', function (msg) {
-	console.error('Success:', msg);
+	console.error('Success: %s', msg);
 });
 
 emitter.on('push', function (event) {
-	console.log('Received a push event for %s to %s',
-		event.payload.repository.name,
-		event.payload.ref);
+	console.log('Received a push event for %s to %s', event.payload.repository.name, event.payload.ref);
 
-	ansibleHandler.initialize(emitter);
-
-	var deploy = ansibleHandler.deploy({
-		playbook: 'temp',
-		vars: {
-			env: 'dev'
-		}
+	ansibleHandler.initialize(emitter, function() {
+		ansibleHandler.deploy({
+			playbook: 'temp',
+			vars: {
+				env: 'dev'
+			}
+		});
 	});
 });
