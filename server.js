@@ -1,8 +1,8 @@
 var http = require('http'),
-	webhookHandler = require('./lib/webhook-handler'),
-	ansibleHandler = require('./lib/ansible-handler'),
 	Emitter = require('tiny-emitter'),
 	emitter = new Emitter(),
+	webhookHandler = require('./lib/webhook-handler')(emitter),
+	ansibleHandler = require('./lib/ansible-handler')(emitter),
 	port = process.env.PORT || 8080,
 	hookOpts = {
 		path: '/webhook',
@@ -10,26 +10,25 @@ var http = require('http'),
 	};
 
 http.createServer(function (req, res) {
-	webhookHandler.initialize(emitter, hookOpts, function(o) {
-		o.handler(req, res, function (err) {
+
+	webhookHandler.handler(req, res, hookOpts, function (err) {
 			res.statusCode = 404;
 			res.end('no such location');
 		});
-	});
+
 }).listen(port);
 
 
 emitter.on('push', function (event) {
 	console.log('Received a push event for %s to %s', event.payload.repository.name, event.payload.ref);
 
-	ansibleHandler.initialize(emitter, function(o) {
-		o.deploy({
-			playbook: 'temp',
-			vars: {
-				env: 'dev'
-			}
-		});
+	ansibleHandler.deploy({
+		playbook: 'temp',
+		vars: {
+			env: 'dev'
+		}
 	});
+
 });
 
 
