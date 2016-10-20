@@ -20,7 +20,12 @@ http.createServer(function (req, res) {
 
 
 emitter.on('push', function (event) {
-	console.log('Received a push event for %s to %s', event.payload.repository.name, event.payload.ref);
+
+	var repoUrl = event.payload.repository.url,
+		eventBranch = event.payload.ref,
+		branch = eventBranch.substring(eventBranch.lastIndexOf('/') + 1);
+
+	console.log('Received a push event for %s to %s', repoUrl, branch);
 
 	ansibleHandler.deploy({
 		playbook: 'temp',
