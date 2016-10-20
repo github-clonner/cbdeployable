@@ -1,8 +1,9 @@
 var http = require('http'),
 	Emitter = require('tiny-emitter'),
 	emitter = new Emitter(),
-	webhookHandler = require('./lib/webhook-handler')(emitter),
+	webhook = require('./lib/webhook')(emitter),
 	ansibleHandler = require('./lib/ansible-handler')(emitter),
+	clone = require('./lib/clone')(emitter),
 	port = process.env.PORT || 8080,
 	hookOpts = {
 		path: '/webhook',
@@ -11,7 +12,7 @@ var http = require('http'),
 
 http.createServer(function (req, res) {
 
-	webhookHandler.handler(req, res, hookOpts, function (err) {
+	webhook.handler(req, res, hookOpts, function (err) {
 			res.statusCode = 404;
 			res.end('no such location');
 		});
@@ -27,15 +28,20 @@ emitter.on('push', function (event) {
 
 	console.log('Received a push event for %s to %s', repoUrl, branch);
 
-	ansibleHandler.deploy({
-		playbook: 'temp',
-		vars: {
-			env: 'dev'
-		}
-	});
+	clone.clone();
+
+	// ansibleHandler.deploy({
+	// 	playbook: 'temp',
+	// 	vars: {
+	// 		env: 'dev'
+	// 	}
+	// });
 
 });
 
+emitter.on('cloned', function (path) {
+	console.error('Cloned Dir: ', path);
+});
 
 emitter.on('deploy-success', function (msg) {
 	console.error('Success: ', msg);

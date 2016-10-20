@@ -17,7 +17,8 @@
     "buffer-equal-constant-time": "~1.0.1",
     "node-ansible": "^0.5.5",
     "promise": "^7.1.1",
-    "tiny-emitter": "^1.1.0"
+    "tiny-emitter": "^1.1.0",
+    "tmp": "0.0.29"
   },
   "devDependencies": {
     "run-series": "~1.1.4",
