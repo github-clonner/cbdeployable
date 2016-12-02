@@ -10,25 +10,21 @@ var http = require('http'),
 		secret: 'myhashsecret'
 	};
 
-http.createServer(function (req, res) {
-
-	webhook.handler(req, res, hookOpts, function (err) {
-			res.statusCode = 404;
-			res.end('no such location');
-		});
-
+http.createServer((req, res) => {
+	webhook.handler(req, res, hookOpts, err => {
+		res.statusCode = 404;
+		res.end('no such location');
+	});
 }).listen(port);
 
 
-emitter.on('push', function (event) {
-
-	var repoUrl = event.payload.repository.url,
+emitter.on('push', event => {
+	let repoUrl = event.payload.repository.url,
 		eventBranch = event.payload.ref,
 		branch = eventBranch.substring(eventBranch.lastIndexOf('/') + 1);
 
 	console.log('Received a push event for %s to %s', repoUrl, branch);
-
-	clone.clone();
+	clone.clone(repoUrl, branch);
 
 	// ansibleHandler.deploy({
 	// 	playbook: 'temp',
@@ -36,18 +32,8 @@ emitter.on('push', function (event) {
 	// 		env: 'dev'
 	// 	}
 	// });
-
 });
 
-emitter.on('cloned', function (path) {
-	console.error('Cloned Dir: ', path);
-});
-
-emitter.on('deploy-success', function (msg) {
-	console.error('Success: ', msg);
-});
-
-
-emitter.on('error', function (err) {
-	console.error('Error: %s', err);
-});
+emitter.on('cloned', path => console.error('Cloned Dir: ', path));
+emitter.on('deploy-success', msg => console.error('Success: ', msg));
+emitter.on('error', err => console.error('Error: %s', err));
