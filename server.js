@@ -4,7 +4,7 @@ var http = require('http'),
 	webhook = require('./lib/webhook')(emitter),
 	ansibleHandler = require('./lib/ansible-handler')(emitter),
 	clone = require('./lib/clone')(emitter),
-	port = process.env.PORT || 8080,
+	port = process.env.PORT || 8999,
 	hookOpts = {
 		path: '/webhook',
 		secret: 'myhashsecret'
