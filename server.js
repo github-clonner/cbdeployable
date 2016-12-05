@@ -6,7 +6,7 @@ var http = require('http'),
 	port = process.env.PORT || 8999,
 	hookOpts = {
 		path: '/webhook',
-		secret: 'myhashsecret'
+		secret: 'CBD3pl0y3RRulz!'
 	};
 
 http.createServer((req, res) => {
