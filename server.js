@@ -3,6 +3,7 @@ var http = require('http'),
 	emitter = new Emitter(),
 	webhook = require('./lib/webhook')(emitter),
 	ansibleHandler = require('./lib/ansible-handler')(emitter),
+	clone = require('./lib/clone')(emitter),
 	port = process.env.PORT || 8999,
 	hookOpts = {
 		path: '/webhook',
@@ -23,6 +24,7 @@ emitter.on('push', event => {
 		branch = eventBranch.substring(eventBranch.lastIndexOf('/') + 1);
 
 	console.log('Received a push event for %s to %s', repoUrl, branch);
+	clone.clone(repoUrl, branch);
 
 	// ansibleHandler.deploy({
 	// 	playbook: 'temp',
@@ -32,5 +34,6 @@ emitter.on('push', event => {
 	// });
 });
 
+emitter.on('cloned', path => console.error('Cloned Dir: ', path));
 emitter.on('deploy-success', msg => console.error('Success: ', msg));
 emitter.on('error', err => console.error('Error: %s', err));
